@@ -1,0 +1,63 @@
+service: indexer
+
+plugins:
+  - serverless-python-requirements
+  - serverless-iam-roles-per-function
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, "dev"}
+
+functions:
+  indexer:
+    handler: metadata-indexer.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt: [VideoMetadata, StreamArn]
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:GetRecords
+          - dynamodb:GetShardIterator
+          - dynamodb:ListStreams
+          - es:ESHttpPost
+          - es:ESHttpPut
+        Resource: "*"
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+
+resources:
+  Resources: 
+    VideoMetadata:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${self:provider.stage}-video-metadata
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+
+    # VideoSearch:
+    #   Type: AWS::Elasticsearch::Domain
+    #   Properties:
+    #     EBSOptions:
+    #       EBSEnabled: true
+    #       VolumeType: gp2
+    #       VolumeSize: 10
+    #     ElasticsearchClusterConfig:
+    #       InstanceType: t2.small.elasticsearch
+    #       InstanceCount: 1
+    #       DedicatedMasterEnabled: false
+    #       ZoneAwarenessEnabled: false
+    #     ElasticsearchVersion: 7.4
