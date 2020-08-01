@@ -2,13 +2,22 @@ service: indexer
 
 plugins:
   - serverless-python-requirements
-  - serverless-iam-roles-per-function
 
 provider:
   name: aws
   runtime: python3.8
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-2'}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:ListStreams
+        - es:ESHttpPost
+        - es:ESHttpPut
+      Resource: "*"
 
 functions:
   indexer:
@@ -18,16 +27,6 @@ functions:
           type: dynamodb
           arn:
             Fn::GetAtt: [EpisodeMetadata, StreamArn]
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:DescribeTable
-          - dynamodb:GetRecords
-          - dynamodb:GetShardIterator
-          - dynamodb:ListStreams
-          - es:ESHttpPost
-          - es:ESHttpPut
-        Resource: "*"
 
 custom:
   pythonRequirements:

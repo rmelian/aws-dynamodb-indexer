@@ -13,6 +13,7 @@ A serverless application that sets up a lambda function to consume data from a D
 
 ### Tech Stack
 * [Serverless Framework](https://www.serverless.com/)
+* [Serverless Python Requirements](https://github.com/UnitedIncome/serverless-python-requirements#readme)
 * [Amazon DynamoDB](https://aws.amazon.com/dynamodb/)
 * [AWS Lambda](https://aws.amazon.com/lambda/)
 * [Amazon Elasticsearch](https://aws.amazon.com/elasticsearch-service/)

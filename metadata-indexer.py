@@ -2,7 +2,7 @@ import boto3
 import requests
 from requests_aws4auth import AWS4Auth
 
-es_host = "https://search-mini-ma-assete-i9pybhqdcgv0-q2qqdrsdhqy6ewqrnnsu6wlp5i.us-east-1.es.amazonaws.com"
+es_host = ""
 es_index = "metadata"
 es_type = "episodes"
 url = es_host + '/' + es_index + '/' + es_type + '/'

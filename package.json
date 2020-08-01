@@ -1,16 +1,9 @@
 {
   "name": "dynamodb-data-to-elasticsearch-syncronizer",
   "version": "1.0.0",
+  "author": "Raisel Melian",
   "description": "how to index dynamodb data to elasticsearch",
   "dependencies": {
     "serverless-python-requirements": "^5.1.0"
-  },
-  "devDependencies": {
-    "serverless-iam-roles-per-function": "^2.0.2"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Raisel Melian",
-  "license": "ISC"
+  }
 }
