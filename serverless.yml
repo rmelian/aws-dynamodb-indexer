@@ -7,7 +7,8 @@ plugins:
 provider:
   name: aws
   runtime: python3.8
-  stage: ${opt:stage, "dev"}
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
 
 functions:
   indexer:
@@ -16,7 +17,7 @@ functions:
       - stream:
           type: dynamodb
           arn:
-            Fn::GetAtt: [VideoMetadata, StreamArn]
+            Fn::GetAtt: [EpisodeMetadata, StreamArn]
     iamRoleStatements:
       - Effect: Allow
         Action:
@@ -34,30 +35,30 @@ custom:
 
 resources:
   Resources: 
-    VideoMetadata:
+    EpisodeMetadata:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:service}-${self:provider.stage}-video-metadata
+        TableName: ${self:service}-${self:provider.stage}-episode-metadata
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
-          - AttributeName: name
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          - AttributeName: name
+          - AttributeName: id
             KeyType: HASH
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
 
-    # VideoSearch:
-    #   Type: AWS::Elasticsearch::Domain
-    #   Properties:
-    #     EBSOptions:
-    #       EBSEnabled: true
-    #       VolumeType: gp2
-    #       VolumeSize: 10
-    #     ElasticsearchClusterConfig:
-    #       InstanceType: t2.small.elasticsearch
-    #       InstanceCount: 1
-    #       DedicatedMasterEnabled: false
-    #       ZoneAwarenessEnabled: false
-    #     ElasticsearchVersion: 7.4
+    EpisodeSearch:
+      Type: AWS::Elasticsearch::Domain
+      Properties:
+        EBSOptions:
+          EBSEnabled: true
+          VolumeType: gp2
+          VolumeSize: 10
+        ElasticsearchClusterConfig:
+          InstanceType: t2.small.elasticsearch
+          InstanceCount: 1
+          DedicatedMasterEnabled: false
+          ZoneAwarenessEnabled: false
+        ElasticsearchVersion: 7.7
