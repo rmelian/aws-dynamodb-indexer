@@ -17,11 +17,14 @@ provider:
         - dynamodb:ListStreams
         - es:ESHttpPost
         - es:ESHttpPut
+        - es:ESHttpDelete
       Resource: "*"
 
 functions:
-  indexer:
+  indexer:    
     handler: metadata-indexer.handler
+    environment:
+      ES_HOST: ''
     events:
       - stream:
           type: dynamodb
@@ -61,3 +64,18 @@ resources:
           DedicatedMasterEnabled: false
           ZoneAwarenessEnabled: false
         ElasticsearchVersion: 7.7
+
+        # DANGER ZONE
+        # Don't do this on production
+        AccessPolicies:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: '*'
+              Action: 'es:*'
+              Resource: '*'
+              Condition:
+                IpAddress:
+                  aws:SourceIp: 
+                    - "73.232.50.121"

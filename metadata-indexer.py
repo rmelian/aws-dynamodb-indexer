@@ -1,8 +1,9 @@
+import os
 import boto3
 import requests
 from requests_aws4auth import AWS4Auth
 
-es_host = ""
+es_host = os.environ['ES_HOST']
 es_index = "metadata"
 es_type = "episodes"
 url = es_host + '/' + es_index + '/' + es_type + '/'
